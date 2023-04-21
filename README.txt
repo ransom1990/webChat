@@ -21,4 +21,8 @@ openssl req -x509 -out localhost.crt -keyout localhost.key \
 
 this needs to be ran on powershell / on the host
 
+you nedd open ssl going to get going
+
+ope!
+
 
