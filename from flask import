@@ -1,0 +1,32 @@
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
+# Store messages in a list
+messages = []
+
+@app.route('/')
+def index():
+    return render_template('index.html', messages=messages)
+
+@socketio.on('chat-message')
+def handle_chat_message(data):
+    username = data['username']
+    message = data['message']
+    emit('chat-message', {'username': username, 'message': message}, broadcast=True)
+
+@socketio.on('server-message')
+def handle_server_message(message):
+    messages.append(message)  # Store the message in the list
+    emit('server-message', {'message': message}, broadcast=True)
+    
+
+if __name__ == '__main__':
+    # Create a secure context
+    context = ('C:/Users/aransom/Documents/Code/chat server/localhost.crt', 'C:/Users/aransom/Documents/Code/chat server/localhost.key')
+
+    # Run the server
+    socketio.run(app, host='192.168.0.48', port=443, ssl_context=context)
